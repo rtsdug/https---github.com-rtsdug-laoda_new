@@ -1,0 +1,186 @@
+/* 基础样式 */
+body {
+    background-color: gainsboro;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    line-height: 1.6;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 链接样式 */
+a {
+    color: rgb(36, 142, 188);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+a:hover {
+    color: #fff;
+    background-color: rgb(36, 142, 188);
+    text-decoration: none;
+}
+
+/* 标题样式 */
+h1, h2, h3 {
+    color: rgb(36, 142, 188);
+    margin: 20px 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 居中内容 */
+.aaa {
+    text-align: center;
+}
+
+/* 分隔线样式 */
+hr {
+    border: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgb(36, 142, 188), transparent);
+    margin: 30px auto;
+    width: 80%;
+    max-width: 500px;
+}
+
+/* 表格样式 */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    border-top: 2px solid rgb(36, 142, 188);
+    border-bottom: 2px solid rgb(36, 142, 188);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: rgba(36, 142, 188, 0.1);
+    color: rgb(36, 142, 188);
+    font-weight: bold;
+}
+
+/* 图片样式 */
+img {
+    max-width: 100%;
+    height: auto;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+img:hover {
+    transform: scale(1.03);
+}
+
+/* 导航菜单 */
+.nav-menu {
+    margin: 30px 0;
+    padding: 15px;
+    background-color: rgba(36, 142, 188, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.nav-menu a {
+    margin: 0 10px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+/* 按钮样式 */
+.nnn {
+    font: inherit;
+    background-color: rgb(36, 142, 188);
+    border: 0;
+    color: white;
+    border-radius: 0.5em;
+    font-size: 1.35rem;
+    padding: 0.5em 1.5em;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(36, 142, 188, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: block;
+    margin: 30px auto;
+}
+.nnn:hover {
+    background-color: rgb(28, 120, 160);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(36, 142, 188, 0.4);
+}
+.nnn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(36, 142, 188, 0.3);
+}
+
+/* 页脚样式 */
+.footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    background-color: rgba(36, 142, 188, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* 游戏卡片样式 */
+.game-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 800px;
+}
+.game-card img {
+    max-height: 200px;
+    display: block;
+    margin: 0 auto;
+}
+.game-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background-color: rgb(36, 142, 188);
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.game-link:hover {
+    background-color: rgb(28, 120, 160);
+}
+
+/* 下载项样式 */
+.download-item {
+    display: inline-block;
+    margin: 15px;
+    text-align: center;
+    vertical-align: top;
+    width: 200px;
+}
+.download-item img {
+    height: 60px;
+    margin-bottom: 10px;
+}
+.download-link {
+    display: block;
+    margin-top: 10px;
+}
+
+/* 维护页面样式 */
+.maintenance {
+    text-align: center;
+    padding: 50px 20px;
+}
+.maintenance h1 {
+    color: #ff6b6b;
+}

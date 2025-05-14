@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自我介绍 - ttertterttertter的个人网站</title>
+    <link rel="stylesheet" href="../css.css">
+    <style>
+        .profile {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            max-width: 800px;
+            gap: 30px;
+        }
+        .profile-img img {
+            max-width: 200px;
+            border-radius: 50%;
+            border: 5px solid rgba(36, 142, 188, 0.3);
+        }
+        .profile-info {
+            flex: 2;
+            min-width: 300px;
+        }
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .interest-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .interest-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .interest-card img {
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .timeline {
+            max-width: 600px;
+            margin: 30px auto;
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50px; /* 从标题下方开始 */
+            bottom: 20px; /* 底部留空 */
+            left: 50%;
+            width: 2px;
+            background-color: rgb(36, 142, 188);
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .timeline-date {
+            font-weight: bold;
+            color: rgb(36, 142, 188);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="bbb" class="aaa">自我介绍</h1>
+    
+    <div class="nav-menu">
+        <p class="aaa">
+            <a href="../我的世界/index.html">我的世界</a> | 
+            <a href="../游戏/index.html">游戏</a> | 
+            <a href="../其他/index.html">其他</a> |
+            <a href="../index.html">首页</a>
+        </p>
+    </div>
+    
+    <div class="profile">
+        <div >
+            <img src="../图片/无标题.png" alt="我的头像">
+        </div>
+        <div class="profile-info">
+            <h2>你好，我是 ttertterttertter！</h2>
+            <p>一名热爱编程、游戏开发和创意设计的在校小学生。我喜欢探索有趣的项目</p>
+            <p>这个网站是我分享作品和想法的地方，希望你能找到感兴趣的内容！</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin: 40px 0;">
+        <h2>我的兴趣爱好</h2>
+        <div class="interests">
+            <div class="interest-card">
+                <img src="图片/mc百科.png" alt="我的世界">
+                <h3>我的世界</h3>
+                <p>建筑 & 红石</p>
+            </div>
+            <div class="interest-card">
+                <img src="图片/c++.png" alt="编程">
+                <h3>编程</h3>
+                <p>解决问题 & 自动化</p>
+            </div>
+            <div class="interest-card">
+                <img src="图片/书.png" alt="学习">
+                <h3>学习</h3>
+                <p>探索新知识</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="timeline">
+        <h2 style="text-align: center; margin-bottom: 40px;">我的经历</h2>
+        
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">2024.11</div>
+                <h3>创建个人网站</h3>
+                <p>建立了这个个人网站，分享我的项目和想法。</p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">2024.12</div>
+                <h3>完成游戏页面</h3>
+                <p>整理了一些好玩的游戏</p>
+            </div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">2024.12</div>
+                <h3>完成我的世界页面</h3>
+                <p>整理了各种我的世界资源和工具，方便自己和他人使用。</p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">未来计划</div>
+                <h3>更多创意项目</h3>
+                <p>计划开发有趣的项目，包括游戏、工具。</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <h2>联系我</h2>
+        <p>邮箱: <a href="mailto:jltxrzrs99@qq.com">jltxrzrs99@qq.com</a></p>
+        <p>微信: zoujunrui2012</p>
+        <p>B站: <a href="https://space.bilibili.com/3493289210677298">ttertterttertter</a></p>
+    </div>
+</body>
+</html>
