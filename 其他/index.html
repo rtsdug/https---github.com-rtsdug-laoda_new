@@ -4,8 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>其他 - ttertterttertter的个人网站</title>
-    <link rel="icon" type="image/png" href="../图片/favicon.png">
     <link rel="stylesheet" href="../css.css">
+    <style>
+        table {border-top: 2px solid rgb(36, 142, 188);border-bottom: 2px solid rgb(36, 142, 188);}
+        .download-section {
+            margin: 30px auto;
+            padding: 20px;
+            background-color: rgba(36, 142, 188, 0.1);
+            border-radius: 8px;
+            max-width: 600px;
+        }
+        .download-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .download-form input {
+            padding: 10px;
+            border: 1px solid rgb(36, 142, 188);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .download-form button {
+            padding: 10px 15px;
+            background-color: rgb(36, 142, 188);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .download-form button:hover {
+            background-color: rgb(28, 120, 160);
+        }
+        .file-list {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: white;
+        }
+        .file-list h3 {
+            margin-top: 0;
+            color: rgb(36, 142, 188);
+        }
+        .file-list ul {
+            padding-left: 20px;
+        }
+        /* 自定义密码框样式 */
+        /* 密码弹窗容器 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 弹窗内容 */
+.modal-content {
+    background-color: white;
+    width: 320px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* 标题样式 */
+#password-title {
+    color: rgb(36, 142, 188);
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+/* 密码输入框容器 */
+.password-input-container {
+    width: 100%;
+    margin: 15px 0;
+}
+
+/* 密码输入框 */
+#password-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* 按钮容器 */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* 取消按钮 */
+#password-cancel {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 确认按钮 */
+#password-submit {
+    background-color: rgb(36, 142, 188);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+    </style>
 </head>
 <body>
     <h1 id="bbb" class="aaa">其他内容</h1>
@@ -18,22 +142,195 @@
             <a href="../index.html">首页</a>
         </p>
     </div>
-    
-    <table>
-        <caption>作业下载</caption>
-        <tr><th>作业名称</th><th>下载链接</th></tr>
-        <tr>
-            <td>六年一班毕业联欢会策划书(未完工)</td>
-            <td><a href="./word/六年一班毕业联欢会策划书(未完工).rtf">下载RTF文件</a></td>
-        </tr>
-        <tr>
-            <td>六年一班毕业联欢会ppt(没做)</td>
-            <td><a href="./ppt/六年一班毕业联欢会ppt(没做).pptx">下载PPT文件</a></td>
-        </tr>
-    </table>
-    
-    <div class="footer">
-        <p>ttertterttertter 版权所有</p>
+    <div class="download-section">
+        <h2 style="color: rgb(36, 142, 188); text-align: center;">文件下载系统</h2>
+        <div class="download-form">
+            <input type="text" id="file-number" placeholder="输入文件编号(多个用逗号分隔)">
+            <button onclick="downloadFile()">下载文件</button>
+        </div>
+        <div id="download-result" class="file-list"></div>
     </div>
+    <!-- 自定义密码输入框 -->
+        <div id="password-modal" class="modal">
+            <div class="modal-content">
+                <h3 id="password-title">请输入文件密码：</h3>
+                <div class="password-input-container">
+                    <input type="password" id="password-input" placeholder="输入密码">
+                </div>
+                <div class="modal-buttons">
+                    <button id="password-cancel">取消</button>
+                    <button id="password-submit">确认</button>
+                </div>
+            </div>
+        </div>
+    <div class="footer">
+        <p>© ttertterttertter 版权所有</p>
+    </div>
+
+    <script>
+        // 文件映射表，每个文件有自己的密码
+        const fileMap = {
+            "1": {
+                name: "六年一班毕业联欢会策划书(未完工)",
+                path: "./word/六年一班毕业联欢会策划书(未完工).rtf",
+                password: "plan123"  // 此文件的单独密码
+            },
+            "2": {
+                name: "六年一班毕业联欢会ppt(没做)",
+                path: "./ppt/六年一班毕业联欢会ppt(没做).pptx",
+                password: "ppt456"   // 此文件的单独密码
+            },
+            "3": {
+                name: "我的世界建筑指南",
+                path: "./docs/我的世界建筑指南.pdf",
+                password: "minecraft789"  // 此文件的单独密码
+            },
+            "4": {
+                name: "游戏开发笔记",
+                path: "./docs/游戏开发笔记.docx",
+                password: "game101"  // 此文件的单独密码
+            }
+        };
+        // 自定义密码输入函数
+function getPasswordViaModal(fileId, fileName) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('password-modal');
+        const input = document.getElementById('password-input');
+        const title = document.getElementById('password-title');
+        const submitBtn = document.getElementById('password-submit');
+        const cancelBtn = document.getElementById('password-cancel');
+        
+        // 设置标题
+        title.textContent = `请输入编号 ${fileId} 的文件的密码：`;
+        
+        // 显示模态框
+        modal.style.display = 'flex';
+        input.value = '';
+        input.focus();
+        
+        // 处理确认按钮
+        const handleSubmit = () => {
+            modal.style.display = 'none';
+            resolve(input.value);
+        };
+        
+        // 处理取消按钮
+        const handleCancel = () => {
+            modal.style.display = 'none';
+            resolve(null);
+        };
+        
+        // 添加事件监听器
+        submitBtn.onclick = handleSubmit;
+        cancelBtn.onclick = handleCancel;
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter') handleSubmit();
+            if (e.key === 'Escape') handleCancel();
+        };
+    });
+}
+        
+        // 修改后的密码检查函数
+        async function checkFilePassword(fileId) {
+            
+            const file = fileMap[fileId];
+            if (!file) return false;
+            
+            const password = await getPasswordViaModal(fileId, file.name);
+            
+            if (password === null) {
+                return null; // 用户取消
+            }
+            
+            if (password === file.password) {
+                authenticatedFiles.add(fileId);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        // 下载文件函数（支持多文件）
+        async function downloadFile() {
+            const input = document.getElementById('file-number');
+            const numbers = input.value.trim().split(/[,，\s]+/);
+            const resultDiv = document.getElementById('download-result');
+            
+            // 清空之前的结果
+            resultDiv.innerHTML = "";
+            
+            if (numbers.length === 0 || (numbers.length === 1 && !numbers[0])) {
+                appendResult("<p style='color:red;'>错误: 请输入文件编号</p>");
+                return;
+            }
+            
+            let validFiles = [];
+            let invalidNumbers = [];
+            let failedAuth = [];
+            let cancelledFiles = [];
+            
+            // 先检查所有编号的有效性
+            numbers.forEach(num => {
+                if (!fileMap[num] && num) {
+                    invalidNumbers.push(num);
+                }
+            });
+            
+            if (invalidNumbers.length > 0) {
+                appendResult(`<p style='color:red;'>错误: 编号 ${invalidNumbers.join(', ')} 的文件不存在</p>`);
+            }
+            
+            // 逐个处理有效文件
+            for (const num of numbers) {
+                if (!fileMap[num] || !num) continue;
+                
+                const authResult = await checkFilePassword(num);
+                
+                if (authResult === true) {
+                    const file = fileMap[num];
+                    validFiles.push(file);
+                    
+                    // 显示即将下载的文件
+                    appendResult(`<p>准备下载: 编号 ${num} 的文件...</p>`);
+                    
+                    // 添加短暂延迟使提示信息可见
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                    // 执行下载
+                    const link = document.createElement('a');
+                    link.href = file.path;
+                    link.download = file.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // 显示下载成功
+                    appendResult(`<p style='color:green;'>编号 ${num} 的文件下载成功!</p>`);
+                    
+                } else if (authResult === null) {
+                    cancelledFiles.push(num);
+                    appendResult(`<p style='color:blue;'>用户取消下载编号 ${num} 的文件</p>`);
+                } else {
+                    failedAuth.push(num);
+                    appendResult(`<p style='color:orange;'>编号 ${num} 的文件密码验证失败</p>`);
+                }
+                
+                // 添加短暂延迟使流程更清晰
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            // 显示总结信息
+            if (validFiles.length > 0) {
+                appendResult(`<p style='color:green;'>已完成 ${validFiles.length} 个文件下载!</p>`);
+            }
+        }
+        // 辅助函数：向结果区域追加内容
+        function appendResult(html) {
+            const resultDiv = document.getElementById('download-result');
+            resultDiv.innerHTML += html;
+            // 滚动到底部确保最新消息可见
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+    </script>
 </body>
 </html>
