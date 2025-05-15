@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>其他 - ttertterttertter的个人网站</title>
+    <link rel="icon" type="image/png" href="../图片/favicon.png">
     <link rel="stylesheet" href="../css.css">
     <style>
         table {border-top: 2px solid rgb(36, 142, 188);border-bottom: 2px solid rgb(36, 142, 188);}
@@ -177,7 +178,7 @@
             },
             "46552": {
                 name: "六年一班毕业联欢会ppt(没做)",
-                path: "./ppt/六年一班毕业联欢会ppt(没做).pptx",
+                path: "./下载/ppt/六年一班毕业联欢会ppt(没做).pptx",
                 password: "46552"
             },
         };
@@ -221,99 +222,80 @@ function getPasswordViaModal(fileId, fileName) {
 }
         
         // 修改后的密码检查函数
-        async function checkFilePassword(fileId) {
-            
-            const file = fileMap[fileId];
-            if (!file) return false;
-            
-            const password = await getPasswordViaModal(fileId, file.name);
-            
-            if (password === null) {
-                return null; // 用户取消
-            }
-            
-            if (password === file.password) {
-                authenticatedFiles.add(fileId);
-                return true;
-            } else {
-                return false;
-            }
+        // 修改后的密码检查函数
+async function checkFilePassword(fileId) {
+    const file = fileMap[fileId];
+    if (!file) return { success: false, message: "文件不存在" };
+    
+    const password = await getPasswordViaModal(fileId, file.name);
+    
+    if (password === null) {
+        return { success: null, message: "用户取消下载" };
+    }
+    
+    if (password === file.password) {
+        authenticatedFiles.add(fileId);
+        return { success: true, message: "密码正确" };
+    } else {
+        return { success: false, message: "密码错误" };
+    }
+}
+
+// 修改后的下载函数
+async function downloadFile() {
+    const input = document.getElementById('file-number');
+    const numbers = input.value.trim().split(/[,，\s]+/);
+    const resultDiv = document.getElementById('download-result');
+    
+    resultDiv.innerHTML = "";
+    
+    if (!numbers.length || (numbers.length === 1 && !numbers[0])) {
+        appendResult("<p style='color:red;'>请输入文件编号</p>");
+        return;
+    }
+
+    for (const num of numbers) {
+        if (!fileMap[num]) {
+            appendResult(`<p style='color:red;'>编号 ${num} 的文件不存在</p>`);
+            continue;
         }
-        
-        // 下载文件函数（支持多文件）
-        async function downloadFile() {
-            const input = document.getElementById('file-number');
-            const numbers = input.value.trim().split(/[,，\s]+/);
-            const resultDiv = document.getElementById('download-result');
+
+        try {
+            const { success, message } = await checkFilePassword(num);
             
-            // 清空之前的结果
-            resultDiv.innerHTML = "";
-            
-            if (numbers.length === 0 || (numbers.length === 1 && !numbers[0])) {
-                appendResult("<p style='color:red;'>错误: 请输入文件编号</p>");
-                return;
-            }
-            
-            let validFiles = [];
-            let invalidNumbers = [];
-            let failedAuth = [];
-            let cancelledFiles = [];
-            
-            // 先检查所有编号的有效性
-            numbers.forEach(num => {
-                if (!fileMap[num] && num) {
-                    invalidNumbers.push(num);
-                }
-            });
-            
-            if (invalidNumbers.length > 0) {
-                appendResult(`<p style='color:red;'>错误: 编号 ${invalidNumbers.join(', ')} 的文件不存在</p>`);
-            }
-            
-            // 逐个处理有效文件
-            for (const num of numbers) {
-                if (!fileMap[num] || !num) continue;
+            if (success === true) {
+                const file = fileMap[num];
+                appendResult(`<p>正在下载编号 ${num} 的文件...</p>`);
                 
-                const authResult = await checkFilePassword(num);
+                // 使用fetch API确保文件存在
+                const response = await fetch(file.path);
+                if (!response.ok) throw new Error("文件不存在");
                 
-                if (authResult === true) {
-                    const file = fileMap[num];
-                    validFiles.push(file);
-                    
-                    // 显示即将下载的文件
-                    appendResult(`<p>准备下载: 编号 ${num} 的文件...</p>`);
-                    
-                    // 添加短暂延迟使提示信息可见
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    
-                    // 执行下载
-                    const link = document.createElement('a');
-                    link.href = file.path;
-                    link.download = file.name;
-                    document.body.appendChild(link);
-                    link.click();
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = file.name;
+                document.body.appendChild(link);
+                link.click();
+                
+                setTimeout(() => {
                     document.body.removeChild(link);
-                    
-                    // 显示下载成功
-                    appendResult(`<p style='color:green;'>编号 ${num} 的文件下载成功!</p>`);
-                    
-                } else if (authResult === null) {
-                    cancelledFiles.push(num);
-                    appendResult(`<p style='color:blue;'>用户取消下载编号 ${num} 的文件</p>`);
-                } else {
-                    failedAuth.push(num);
-                    appendResult(`<p style='color:orange;'>编号 ${num} 的文件密码验证失败</p>`);
-                }
+                    URL.revokeObjectURL(url);
+                    appendResult(`<p style='color:green;'>下载成功!</p>`);
+                }, 100);
                 
-                // 添加短暂延迟使流程更清晰
-                await new Promise(resolve => setTimeout(resolve, 300));
+            } else if (success === null) {
+                appendResult(`<p style='color:blue;'>用户取消下载编号 ${num} 的文件</p>`);
+            } else {
+                appendResult(`<p style='color:red;'>编号 ${num} 的文件: ${message}</p>`);
             }
             
-            // 显示总结信息
-            if (validFiles.length > 0) {
-                appendResult(`<p style='color:green;'>已完成 ${validFiles.length} 个文件下载!</p>`);
-            }
+        } catch (error) {
+            appendResult(`<p style='color:red;'>下载失败: ${error.message}</p>`);
         }
+    }
+}
         // 辅助函数：向结果区域追加内容
         function appendResult(html) {
             const resultDiv = document.getElementById('download-result');
