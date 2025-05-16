@@ -169,140 +169,129 @@
     </div>
 
     <script>
-        // 文件映射表，每个文件有自己的密码
-        const fileMap = {
-            "45112": {
-                name: "六年一班毕业联欢会策划书(未完工)",
-                path: "./下载/word/六年一班毕业联欢会策划书(未完工).rtf",
-                password: "45112"
-            },
-            "46552": {
-                name: "六年一班毕业联欢会ppt(没做)",
-                path: "./下载/ppt/六年一班毕业联欢会ppt(没做).pptx",
-                password: "46552"
-            },
-        };
-        // 自定义密码输入函数
-function getPasswordViaModal(fileId, fileName) {
-    return new Promise((resolve) => {
-        const modal = document.getElementById('password-modal');
-        const input = document.getElementById('password-input');
-        const title = document.getElementById('password-title');
-        const submitBtn = document.getElementById('password-submit');
-        const cancelBtn = document.getElementById('password-cancel');
-        
-        // 设置标题
-        title.textContent = `请输入编号 ${fileId} 的文件的密码：`;
-        
-        // 显示模态框
-        modal.style.display = 'flex';
-        input.value = '';
-        input.focus();
-        
-        // 处理确认按钮
-        const handleSubmit = () => {
-            modal.style.display = 'none';
-            resolve(input.value);
-        };
-        
-        // 处理取消按钮
-        const handleCancel = () => {
-            modal.style.display = 'none';
-            resolve(null);
-        };
-        
-        // 添加事件监听器
-        submitBtn.onclick = handleSubmit;
-        cancelBtn.onclick = handleCancel;
-        input.onkeydown = (e) => {
-            if (e.key === 'Enter') handleSubmit();
-            if (e.key === 'Escape') handleCancel();
-        };
-    });
-}
-        
-        // 修改后的密码检查函数
-        // 修改后的密码检查函数
-async function checkFilePassword(fileId) {
-    const file = fileMap[fileId];
-    if (!file) return { success: false, message: "文件不存在" };
-    
-    const password = await getPasswordViaModal(fileId, file.name);
-    
-    if (password === null) {
-        return { success: null, message: "用户取消下载" };
+    // SHA-256哈希函数
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    // 文件映射表，每个文件有自己的密码
+    const fileMap = {
+        "45112": {
+            name: "六年一班毕业联欢会策划书(未完工)",
+            path: "./下载/word/六年一班毕业联欢会策划书(未完工).rtf",
+            password: "5d7a74cb0dcacea07c7c06b7c84f64f6de7f98dcd9b9fdc3521cefe6fe08a526"
+        },
+        "46552": {
+            name: "六年一班毕业联欢会ppt(没做)",
+            path: "./下载/ppt/六年一班毕业联欢会ppt(没做).pptx",
+            password: "540cdc4a622d4f0cfd892cf9a3aca54983b2b277c7a07364abad926225449d36"
+        },
+    };
+    // 自定义密码输入函数
+    function getPasswordViaModal(fileId, fileName) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('password-modal');
+            const input = document.getElementById('password-input');
+            const title = document.getElementById('password-title');
+            const submitBtn = document.getElementById('password-submit');
+            const cancelBtn = document.getElementById('password-cancel');
+            
+            title.textContent = `请输入编号 ${fileId} 的文件的密码：`;
+            modal.style.display = 'flex';
+            input.value = '';
+            input.focus();
+            
+            const handleSubmit = () => {
+                modal.style.display = 'none';
+                resolve(input.value);
+            };
+            
+            const handleCancel = () => {
+                modal.style.display = 'none';
+                resolve(null);
+            };
+            
+            submitBtn.onclick = handleSubmit;
+            cancelBtn.onclick = handleCancel;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') handleSubmit();
+                if (e.key === 'Escape') handleCancel();
+            };
+        });
     }
     
-    if (password === file.password) {
-        authenticatedFiles.add(fileId);
-        return { success: true, message: "密码正确" };
-    } else {
-        return { success: false, message: "密码错误" };
+    // 密码检查函数
+    async function checkFilePassword(fileId) {
+        const file = fileMap[fileId];
+        if (!file) return { success: false, message: "文件不存在" };
+        
+        const password = await getPasswordViaModal(fileId, file.name);
+        
+        if (password === null) {
+            return { success: null};
+        }
+        const inputHash = await sha256(password);
+        if (inputHash === file.password) {
+            return { success: true};
+        } else {
+            return { success: false, message: "密码错误" };
+        }
     }
-}
-
-// 修改后的下载函数
-async function downloadFile() {
-    const input = document.getElementById('file-number');
-    const numbers = input.value.trim().split(/[,，\s]+/);
-    const resultDiv = document.getElementById('download-result');
     
-    resultDiv.innerHTML = "";
-    
-    if (!numbers.length || (numbers.length === 1 && !numbers[0])) {
-        appendResult("<p style='color:red;'>请输入文件编号</p>");
-        return;
-    }
-
-    for (const num of numbers) {
-        if (!fileMap[num]) {
-            appendResult(`<p style='color:red;'>编号 ${num} 的文件不存在</p>`);
-            continue;
+    // 下载文件函数
+    async function downloadFile() {
+        const input = document.getElementById('file-number');
+        const numbers = input.value.trim().split(/[,，\s]+/);
+        const resultDiv = document.getElementById('download-result');
+        
+        resultDiv.innerHTML = "";
+        
+        if (!numbers.length || (numbers.length === 1 && !numbers[0])) {
+            appendResult("<p style='color:red;'>请输入文件编号</p>");
+            return;
         }
 
-        try {
-            const { success, message } = await checkFilePassword(num);
-            
-            if (success === true) {
-                const file = fileMap[num];
-                appendResult(`<p>正在下载编号 ${num} 的文件...</p>`);
-                
-                // 使用fetch API确保文件存在
-                const response = await fetch(file.path);
-                if (!response.ok) throw new Error("文件不存在");
-                
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = file.name;
-                document.body.appendChild(link);
-                link.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    appendResult(`<p style='color:green;'>下载成功!</p>`);
-                }, 100);
-                
-            } else if (success === null) {
-                appendResult(`<p style='color:blue;'>用户取消下载编号 ${num} 的文件</p>`);
-            } else {
-                appendResult(`<p style='color:red;'>编号 ${num} 的文件: ${message}</p>`);
+        for (const num of numbers) {
+            if (!fileMap[num]) {
+                appendResult(`<p style='color:red;'>编号 ${num} 的文件不存在</p>`);
+                continue;
             }
-            
-        } catch (error) {
-            appendResult(`<p style='color:red;'>下载失败: ${error.message}</p>`);
+
+            try {
+                const { success, message } = await checkFilePassword(num);
+                
+                if (success === true) {
+                    const file = fileMap[num];
+                    appendResult(`<p>正在下载编号 ${num} 的文件...</p>`);
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    link.href = file.path;
+                    link.download = file.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    appendResult(`<p style='color:green;'>下载完成</p>`);
+                } else if(success === false){
+                    appendResult(`<p style='color:red;'>${message}</p>`);
+                } else if(success === null){
+                    appendResult(`<p style='color:blue;'>下载取消</p>`);
+                }else{
+                    appendResult(`<p style='color:red;'>发生未知错误</p>`);
+                }
+            } catch (error) {
+                appendResult(`<p style='color:red;'>下载失败: ${error.message}</p>`);
+            }
         }
     }
-}
-        // 辅助函数：向结果区域追加内容
-        function appendResult(html) {
-            const resultDiv = document.getElementById('download-result');
-            resultDiv.innerHTML += html;
-            // 滚动到底部确保最新消息可见
-            resultDiv.scrollTop = resultDiv.scrollHeight;
-        }
-    </script>
+    
+    // 辅助函数
+    function appendResult(html) {
+        const resultDiv = document.getElementById('download-result');
+        resultDiv.innerHTML += html;
+        resultDiv.scrollTop = resultDiv.scrollHeight;
+    }
+</script>
 </body>
 </html>
